@@ -22,7 +22,7 @@ import DB
 GUILD = 'Новый отряд ПЕ-01б'  # название гильдии
 
 # НЕ ТРОГААААААТЬ!!!!!!!!!!!!!!
-TOKEN = 'ODIyMTg5NDMxNDQ0MDc4NjUz.YFOpkw.pGduy6d9LMibDfi5cFudZCLBgjM'
+TOKEN = 'your token'
 
 
 
