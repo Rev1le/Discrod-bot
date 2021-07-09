@@ -38,13 +38,16 @@ class DiscordIdDataBase:
             add()
             return True
 
-    # Принимает ID человека в дисскорде
-    # Возвращает массив с информацией о человеке в формате [id, name, messages, cash]
-    def get_info_on_id(self, id_discord):
-        self.cur.execute(
-            f"SELECT * FROM users WHERE id_discord_user={id_discord}")
-        user_inf = self.cur.fetchone()  # [(),(),(),()]
-        return user_inf
+       # Принимает ID человека в дисскорде и название колонки в БД (users)
+    # Если column пуст, то возвращает кортеж с информацией о человеке,
+    # Если column не пуст, то возвращает информацию из выбраной колонки в таблице
+    def get_info_on_id(self, id_discord, column=''):
+        if not column:
+            self.cur.execute(f"SELECT * FROM users WHERE id_discord_user={id_discord}")
+            return self.cur.fetchone()
+        else:
+            self.cur.execute(f"SELECT {column} FROM users WHERE id_discord_user={id_discord}")
+            return self.cur.fetchone()[0]  # вынимает единственный элемент из кортежа
 
     # Принимает ID человека, изменяемый столбец и прибовляемое число (изначально +1)
     # Возвращает True или False

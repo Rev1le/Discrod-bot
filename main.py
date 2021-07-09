@@ -1,4 +1,4 @@
-#beta v1.0.0
+#beta v0.1.0
 
 '''
 
@@ -19,10 +19,10 @@ from discord_slash import SlashCommand, SlashContext
 
 import DB
 
-GUILD = 'Новый отряд ПЕ-01б'  # название гильдии
+GUILD = 'NAME YOUR GUILD'  # название гильдии
 
-# НЕ ТРОГААААААТЬ!!!!!!!!!!!!!!
-TOKEN = 'ТОКЕН для дс бота'
+# НЕ ТРОГААААААТЬ!!!!!!!!!!!!!! 
+TOKEN = 'YOUR TOKEN'
 
 
 
@@ -32,9 +32,10 @@ intents = discord.Intents.default()
 intents.members = True
 # использование как объект
 client = commands.Bot(command_prefix='!', intents=intents)
-# ПРЕФИКС ДЛЯ КОММАНД ЭТО     !
-# , intents=discord.Intents.all() узнать что это
-#slash = SlashCommand(client)
+# ПРЕФИКС ДЛЯ КОММАНД ЭТО   !
+
+
+#intents=discord.Intents.all() узнать что это
 
 # -------------------СОЗДАТЬ БД ДЛЯ ЗАНЕСЕНИЯ УРОВНЕЙ И ПОЛЬЗОВАТЕЛЕЙ-----------------------------
 
@@ -43,8 +44,9 @@ database = DB.DiscordIdDataBase(DATABASE_PATH)
 
 
 
-
+#__________________________________________________________________________#
 #_________________________________СОБЫТИЯ В ЧАТЕ_________________________________#
+
 
 @client.event  # готовность бота пахать
 async def on_ready():
@@ -52,7 +54,6 @@ async def on_ready():
     for guild in client.guilds:
         if guild.name == GUILD:
             break
-
     print(
         f'{client.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})\n'
@@ -75,7 +76,7 @@ async def on_ready():
 # возможен  on_messange (или будет замена на более поздний))
 async def on_message(message):
     if message.author == client.user:
-        return
+        pass
     else:
         await client.process_commands(message)
         # if message.author.id == 502361945526108170:
@@ -84,13 +85,28 @@ async def on_message(message):
         print(message.author.id)  # изи получил айди пользователя
         database.increase_column(message.author.id, 'total_messages')
 #-----------------------------------------------------------------------------------------------------Ждем обновление БД от Даниила!!!!!
-        user_message = database.get_info_on_id(message.author.id)[2] #[id, name, message, cash]
+        user_message = database.get_info_on_id(message.author.id, 'total_messages') #[id, name, message, cash]
         if user_message % 10 ==  5:
             await message.channel.send(f"Поздравляю, {message.author.mention} с повышением уровня!!!!")
             #database.increase_column(message.author.id, 'total_messages', -user_message)
 
+@client.event
+async def on_member_join(member):
+    role_1 = member.guild.get_role(861535321951174707)# ади роли которую будет получать новый юзер при входе на сервер
+    await member.add_roles(role_1)
+
+    if database.get_info_on_id(member.id): #при пустом массиве выодится False
+        pass
+    else:
+        print("Челика нет")
+        database.add_user([member.id, member.name, 0, 500]) #Если участника нет в БД, то добавим его туда
 
 
+
+
+
+
+#__________________________________________________________________________#
 #_________________________________КОММАНДЫ_________________________________#
 
 @client.command()  # пинг- понг
@@ -196,7 +212,6 @@ async def dail(ctx, text):
         database.increase_column(ctx.author.id, 'cash', -int(text))
 
 
-
 @client.command(name='шлёпа') #вывод картинки рандомной шлёпы
 async def rere(ctx):
     global bufшлёпа
@@ -214,12 +229,13 @@ async def rere(ctx):
     await ctx.send(embed=шлёпа)  # Отправляем Embed
 
 
-# слеш команды НЕ РАБОТАЮЮЮЮЮЮТ!!!!!!!!!!!!(ИСправить через настройки бота)
+
+# слеш команды НЕ РАБОТАЮЮЮЮЮЮТ!!!!!!!!!!!!
 slash = SlashCommand(client)
 
 
-@slash.slash(name="test") #тетсовая слеш команда
-async def test(ctx):
+@slash.slash( description = 'ляляля') #тетсовая слеш команда
+async def cmd(ctx):
     embed = discord.Embed(title="embed test")
     await ctx.send(content="test", embeds=[embed])
 
