@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 
 a = 10
 b = 10
 с = 11
 print(a+b+с)
+=======
+>>>>>>> parent of 25af763 (Update txt now.txt)
